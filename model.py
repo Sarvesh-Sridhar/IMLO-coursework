@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class CNN(nn.module):
+class CNN(nn.Module):
     def __init__(self, num_classes = 2):
         super(CNN, self).__init__()
 
