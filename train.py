@@ -39,7 +39,8 @@ val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
 
 print("Dataloaders created")
 
-model = CNN().to(device)
+num_classes = len(trainval_dataset.classes)
+model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = torch.optim.SGD(model.parameters(), lr = 0.01)
 
@@ -97,6 +98,6 @@ for epoch in range(30):
     val_loss, val_acc = validate(model, val_loader, loss_fn)
 
     print(f"Epoch number {epoch + 1}: "
-          f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc:.4f} | "
-          f"Val Loss = {val_loss:.4f} | Val Acc = {val_acc:.4f}"
+          f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc * 100:.2f}% | "
+          f"Val Loss = {val_loss:.4f} | Val Acc = {val_acc * 100:.2f}%"
           )
