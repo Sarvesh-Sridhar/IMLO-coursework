@@ -47,6 +47,9 @@ train_dataset, val_dataset = random_split(
 train_dataset.dataset.transform = train_transform
 val_dataset.dataset.transform = val_transform
 
+print("Train sample:", type(train_dataset[0][0]))
+print("Val sample:", type(val_dataset[0][0]))
+
 print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
 
 train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True)
