@@ -25,7 +25,7 @@ val_transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-trainval_dataset = OxfordIIITPet(
+trainval_pets_dataset = OxfordIIITPet(
     root = "data",
     split = "trainval",
     target_types = "category",
@@ -33,14 +33,14 @@ trainval_dataset = OxfordIIITPet(
     download = True
 )
 
-print("Trainval split loaded with", len(trainval_dataset), "images")
-print("Classes:", trainval_dataset.classes)
+print("Trainval split loaded with", len(trainval_pets_dataset), "images")
+print("Classes:", trainval_pets_dataset.classes)
 
-train_size = int(0.85 * len(trainval_dataset))
-val_size = len(trainval_dataset) - train_size
+train_size = int(0.85 * len(trainval_pets_dataset))
+val_size = len(trainval_pets_dataset) - train_size
 
 train_dataset, val_dataset = random_split(
-    trainval_dataset,
+    trainval_pets_dataset,
     [train_size, val_size]
 )
 
@@ -54,7 +54,7 @@ val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
 
 print("Dataloaders created")
 
-num_classes = len(trainval_dataset.classes)
+num_classes = len(trainval_pets_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.0001)
