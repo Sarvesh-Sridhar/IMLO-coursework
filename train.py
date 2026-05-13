@@ -9,7 +9,18 @@ from model import CNN
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device in use:", device)
 
-transform = transforms.Compose([
+train_transform = transforms.Compose([
+    transforms.RandomResizedCrop(224, scale = (0.7, 1.0)),
+    transforms.RandomHorizontalFlip(),
+    transforms.ColorJitter(
+        brightness = 0.2,
+        contrast = 0.3,
+        saturation = 0.2,
+    ),
+    transforms.ToTensor(),
+])
+
+val_transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
 ])
@@ -18,7 +29,7 @@ trainval_dataset = OxfordIIITPet(
     root = "data",
     split = "trainval",
     target_types = "category",
-    transform = transform,
+    transform = None,
     download = True
 )
 
@@ -32,6 +43,9 @@ train_dataset, val_dataset = random_split(
     trainval_dataset,
     [train_size, val_size]
 )
+
+train_dataset.dataset.transform = train_transform
+val_dataset.dataset.transform = val_transform
 
 print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
 
