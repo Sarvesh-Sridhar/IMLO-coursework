@@ -1,4 +1,5 @@
 import torch
+import torch.optim as optim
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import OxfordIIITPet
@@ -42,7 +43,7 @@ print("Dataloaders created")
 num_classes = len(trainval_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
-optimiser = torch.optim.SGD(model.parameters(), lr = 0.01)
+optimiser = optim.Adam(model.parameters(), lr = 0.0001)
 
 def train_epoch(model, loader, loss_fn, optimiser):
     model.train()
