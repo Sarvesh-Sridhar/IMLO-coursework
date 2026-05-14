@@ -30,7 +30,7 @@ class CNN(nn.Module):
         self.bn8 = nn.BatchNorm2d(256)
         self.pool4 = nn.MaxPool2d(2)
 
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.2)
         self.fc1 = nn.Linear(256 * 14 * 14, 512)
         self.fc2 = nn.Linear(512, num_classes)
 
