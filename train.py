@@ -73,6 +73,16 @@ model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.001)
 
+sample_img, sample_label = train_dataset[0]
+print("Image type: ", type(sample_img))
+print("Image shape: ", sample_img.shape)
+print("Label: ", sample_label)
+print("Label type :", type(sample_label))
+
+labels = [train_dataset[i][1] for i in range(20)]
+print("First 20 labels: ", labels)
+print("Unique labels in first 20: ", set(labels))
+
 def train_epoch(model, loader, loss_fn, optimiser):
     model.train()
     total_loss = 0
@@ -122,12 +132,10 @@ def validate(model, loader, loss_fn):
     
     return avg_loss, val_acc
 
-scheduler = torch.optim.lr_scheduler.StepLR(optimiser, step_size = 10, gamma = 0.1)
-
 for epoch in range(10):
     train_loss, train_acc = train_epoch(model, train_loader, loss_fn, optimiser)
     val_loss, val_acc = validate(model, val_loader, loss_fn)
-    scheduler.step()
+    
 
     print(f"Epoch number {epoch + 1}: "
           f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc * 100:.2f}% | "
