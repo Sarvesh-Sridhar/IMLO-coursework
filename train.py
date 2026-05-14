@@ -83,6 +83,15 @@ labels = [train_dataset[i][1] for i in range(20)]
 print("First 20 labels: ", labels)
 print("Unique labels in first 20: ", set(labels))
 
+model.eval()
+dummy = torch.randn(4, 3, 224, 224).to(device)
+
+with torch.no_grad():
+    out = model(dummy)
+print("Output shape:", out.shape)
+print("Output sample:", out[0][:5])
+print("Output std:", out.std().item())
+
 def train_epoch(model, loader, loss_fn, optimiser):
     model.train()
     total_loss = 0
