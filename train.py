@@ -64,7 +64,7 @@ print("Dataloaders created")
 num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
-optimiser = optim.Adam(model.parameters(), lr = 0.0001)
+optimiser = optim.Adam(model.parameters(), lr = 0.001)
 
 def train_epoch(model, loader, loss_fn, optimiser):
     model.train()
