@@ -3,7 +3,7 @@ import torch.optim as optim
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import OxfordIIITPet
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 from model import CNN
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -25,24 +25,31 @@ val_transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-first_dataset = OxfordIIITPet(
+train_full_dataset = OxfordIIITPet(
     root = "data",
     split = "trainval",
     target_types = "category",
-    transform = None,
+    transform = train_transform,
     download = True
 )
 
-train_size = int(0.80 * len(first_dataset))
-val_size = len(first_dataset) - train_size
-
-train_dataset, val_dataset = random_split(
-    first_dataset,
-    [train_size, val_size]
+val_full_dataset = OxfordIIITPet(
+    root = "data",
+    split = "trainval",
+    target_types = "category",
+    transform = val_transform,
+    download = False
 )
 
-train_dataset.dataset.transform = train_transform
-val_dataset.dataset.transform = val_transform
+train_size = int(0.80 * len(train_full_dataset))
+val_size = len(train_full_dataset) - train_size
+
+indices = torch.randperm(len(train_full_dataset)).tolist()
+train_indices = indices[:train_size]
+val_indices = indices[train_size:]
+
+train_dataset = Subset(train_full_dataset, train_indices)
+val_dataset = Subset(val_full_dataset, val_indices)
 
 print("Train sample: ", type(train_dataset[0][0]))
 print("Val sample: ", type(val_dataset[0][0]))
@@ -54,7 +61,7 @@ val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
 
 print("Dataloaders created")
 
-num_classes = len(first_dataset.classes)
+num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.0001)
