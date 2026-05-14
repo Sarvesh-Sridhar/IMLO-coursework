@@ -122,9 +122,12 @@ def validate(model, loader, loss_fn):
     
     return avg_loss, val_acc
 
-for epoch in range(30):
+scheduler = torch.optim.lr_scheduler.StepLR(optimiser, step_size = 10, gamma = 0.1)
+
+for epoch in range(10):
     train_loss, train_acc = train_epoch(model, train_loader, loss_fn, optimiser)
     val_loss, val_acc = validate(model, val_loader, loss_fn)
+    scheduler.step()
 
     print(f"Epoch number {epoch + 1}: "
           f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc * 100:.2f}% | "
