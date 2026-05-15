@@ -6,33 +6,48 @@ class CNN(nn.Module):
     def __init__(self, num_classes):
         super(CNN, self).__init__()
 
-        self.conv1 = nn.Conv2d(3, 32, kernel_size = 3, padding = 1)
-        self.bn1 = nn.BatchNorm2d(32)
-        self.conv2 = nn.Conv2d(32, 32, kernel_size = 3, padding = 1)
-        self.bn2 = nn.BatchNorm2d(32)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size = 3, padding = 1)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.conv2 = nn.Conv2d(64, 64, kernel_size = 3, padding = 1)
+        self.bn2 = nn.BatchNorm2d(64)
         self.pool1 = nn.MaxPool2d(2)
 
-        self.conv3 = nn.Conv2d(32, 64, kernel_size = 3, padding = 1)
-        self.bn3 = nn.BatchNorm2d(64)
-        self.conv4 = nn.Conv2d(64, 64, kernel_size = 3, padding = 1)
-        self.bn4 = nn.BatchNorm2d(64)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size = 3, padding = 1)
+        self.bn3 = nn.BatchNorm2d(128)
+        self.conv4 = nn.Conv2d(128, 128, kernel_size = 3, padding = 1)
+        self.bn4 = nn.BatchNorm2d(128)
         self.pool2 = nn.MaxPool2d(2)
 
-        self.conv5 = nn.Conv2d(64, 128, kernel_size = 3, padding = 1)
-        self.bn5 = nn.BatchNorm2d(128)
-        self.conv6 = nn.Conv2d(128, 128, kernel_size = 3, padding = 1)
-        self.bn6 = nn.BatchNorm2d(128)
+        self.conv5 = nn.Conv2d(128, 256, kernel_size = 3, padding = 1)
+        self.bn5 = nn.BatchNorm2d(256)
+        self.conv6 = nn.Conv2d(256, 256, kernel_size = 3, padding = 1)
+        self.bn6 = nn.BatchNorm2d(256)
         self.pool3 = nn.MaxPool2d(2)
 
-        self.conv7 = nn.Conv2d(128, 256, kernel_size = 3, padding = 1)
-        self.bn7 = nn.BatchNorm2d(256)
-        self.conv8 = nn.Conv2d(256, 256, kernel_size = 3, padding = 1)
-        self.bn8 = nn.BatchNorm2d(256)
+        self.conv7 = nn.Conv2d(256, 512, kernel_size = 3, padding = 1)
+        self.bn7 = nn.BatchNorm2d(512)
+        self.conv8 = nn.Conv2d(512, 512, kernel_size = 3, padding = 1)
+        self.bn8 = nn.BatchNorm2d(512)
         self.pool4 = nn.MaxPool2d(2)
 
         self.dropout = nn.Dropout(0.05)
-        self.fc1 = nn.Linear(256 * 14 * 14, 512)
+        self.fc1 = nn.Linear(512 * 14 * 14, 512)
         self.fc2 = nn.Linear(512, num_classes)
+
+        self._initialise_weights()
+
+    def _initialise_weights(self):
+        for layer in self.modules():
+            if isinstance(layer, nn.Conv2d):
+                nn.init.kaiming_normal_(layer.weight, mode = "fan_out", nonlinearity = "relu")
+                if layer.bias is not None:
+                    nn.init.zeros_(layer.bias)
+            elif isinstance(layer, nn.BatchNorm2d):
+                nn.init.ones_(layer.weight)
+                nn.init.zeros_(layer.bias)
+            elif isinstance(layer, nn.Linear):
+                nn.init.kaiming_normal_(layer.weight)
+                nn.init.zeros_(layer.bias)
 
     def forward(self, x):
 
