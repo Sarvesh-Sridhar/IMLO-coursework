@@ -71,7 +71,7 @@ print("Dataloaders created")
 num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
-optimiser = optim.Adam(model.parameters(), lr = 0.001, weight_decay = 0.0001)
+optimiser = optim.Adam(model.parameters(), lr = 0.001)
 
 #sample_img, sample_label = train_dataset[0]
 #print("Image type: ", type(sample_img))
