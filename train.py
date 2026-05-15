@@ -15,12 +15,12 @@ normalise = transforms.Normalize(
 )
 
 train_transform = transforms.Compose([
-    transforms.RandomResizedCrop(224, scale = (0.7, 1.0)),
+    transforms.RandomResizedCrop(224, scale = (0.8, 1.0)),
     transforms.RandomHorizontalFlip(),
     transforms.ColorJitter(
-        brightness = 0.2,
-        contrast = 0.3,
-        saturation = 0.2,
+        brightness = 0.1,
+        contrast = 0.1,
+        saturation = 0.1,
     ),
     transforms.ToTensor(),
     normalise,
