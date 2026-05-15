@@ -42,29 +42,29 @@ train_full_dataset = OxfordIIITPet(
 
 val_full_dataset = OxfordIIITPet(
     root = "data",
-    split = "trainval",
+    split = "test",
     target_types = "category",
     transform = val_transform,
-    download = False
+    download = True
 )
 
-train_size = int(0.80 * len(train_full_dataset))
-val_size = len(train_full_dataset) - train_size
+#train_size = int(0.80 * len(train_full_dataset))
+#val_size = len(train_full_dataset) - train_size
 
-indices = torch.randperm(len(train_full_dataset)).tolist()
-train_indices = indices[:train_size]
-val_indices = indices[train_size:]
+#indices = torch.randperm(len(train_full_dataset)).tolist()
+#train_indices = indices[:train_size]
+#val_indices = indices[train_size:]
 
-train_dataset = Subset(train_full_dataset, train_indices)
-val_dataset = Subset(val_full_dataset, val_indices)
+#train_dataset = Subset(train_full_dataset, train_indices)
+#val_dataset = Subset(val_full_dataset, val_indices)
 
-print("Train sample: ", type(train_dataset[0][0]))
-print("Val sample: ", type(val_dataset[0][0]))
+#print("Train sample: ", type(train_dataset[0][0]))
+#print("Val sample: ", type(val_dataset[0][0]))
 
-print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
+#print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
 
-train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True)
-val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
+train_loader = DataLoader(train_full_dataset, batch_size = 32, shuffle = True)
+val_loader = DataLoader(val_full_dataset, batch_size = 32, shuffle = False)
 
 print("Dataloaders created")
 
@@ -73,24 +73,24 @@ model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.001)
 
-sample_img, sample_label = train_dataset[0]
-print("Image type: ", type(sample_img))
-print("Image shape: ", sample_img.shape)
-print("Label: ", sample_label)
-print("Label type :", type(sample_label))
+#sample_img, sample_label = train_dataset[0]
+#print("Image type: ", type(sample_img))
+#print("Image shape: ", sample_img.shape)
+#print("Label: ", sample_label)
+#print("Label type :", type(sample_label))
 
-labels = [train_dataset[i][1] for i in range(20)]
-print("First 20 labels: ", labels)
-print("Unique labels in first 20: ", set(labels))
+#labels = [train_dataset[i][1] for i in range(20)]
+#print("First 20 labels: ", labels)
+#print("Unique labels in first 20: ", set(labels))
 
-model.eval()
-dummy = torch.randn(4, 3, 224, 224).to(device)
+#model.eval()
+#dummy = torch.randn(4, 3, 224, 224).to(device)
 
-with torch.no_grad():
-    out = model(dummy)
-print("Output shape:", out.shape)
-print("Output sample:", out[0][:5])
-print("Output std:", out.std().item())
+#with torch.no_grad():
+    #out = model(dummy)
+#print("Output shape:", out.shape)
+#print("Output sample:", out[0][:5])
+#print("Output std:", out.std().item())
 
 def train_epoch(model, loader, loss_fn, optimiser):
     model.train()
@@ -141,7 +141,7 @@ def validate(model, loader, loss_fn):
     
     return avg_loss, val_acc
 
-for epoch in range(10):
+for epoch in range(30):
     train_loss, train_acc = train_epoch(model, train_loader, loss_fn, optimiser)
     val_loss, val_acc = validate(model, val_loader, loss_fn)
     
