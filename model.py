@@ -31,8 +31,9 @@ class CNN(nn.Module):
         self.pool4 = nn.MaxPool2d(2)
 
         self.dropout = nn.Dropout(0.05)
-        self.fc1 = nn.Linear(512 * 14 * 14, 512)
-        self.fc2 = nn.Linear(512, num_classes)
+        self.gap = nn.AdaptiveAvgPool2d(1)
+        self.fc1 = nn.Linear(512, 256)
+        self.fc2 = nn.Linear(256, num_classes)
 
         self._initialise_weights()
 
@@ -67,6 +68,8 @@ class CNN(nn.Module):
         x = F.relu(self.bn8(self.conv8(x)))
         x = self.pool4(x)
 
+
+        x = self.gap(x)
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
         x = self.dropout(x)
