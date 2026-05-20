@@ -6,6 +6,12 @@ from torchvision.datasets import OxfordIIITPet
 from torch.utils.data import DataLoader, Subset
 from model import CNN
 
+seed = 42
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device in use:", device)
 
@@ -15,12 +21,13 @@ normalise = transforms.Normalize(
 )
 
 train_transform = transforms.Compose([
-    transforms.RandomResizedCrop(224, scale = (0.8, 1.0)),
+    transforms.RandomResizedCrop(224, scale = (0.7, 1.0)),
     transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(15),
     transforms.ColorJitter(
-        brightness = 0.1,
-        contrast = 0.1,
-        saturation = 0.1,
+        brightness = 0.2,
+        contrast = 0.2,
+        saturation = 0.2,
     ),
     transforms.ToTensor(),
     normalise,
