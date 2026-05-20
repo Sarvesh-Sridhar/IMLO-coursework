@@ -3,7 +3,7 @@ import torch.optim as optim
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import OxfordIIITPet
-from torch.utils.data import DataLoader, random_split, Subset
+from torch.utils.data import DataLoader, Subset
 from model import CNN
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -42,29 +42,29 @@ train_full_dataset = OxfordIIITPet(
 
 val_full_dataset = OxfordIIITPet(
     root = "data",
-    split = "test",
+    split = "trainval",
     target_types = "category",
     transform = val_transform,
-    download = True
+    download = False
 )
 
-#train_size = int(0.80 * len(train_full_dataset))
-#val_size = len(train_full_dataset) - train_size
+train_size = int(0.80 * len(train_full_dataset))
+val_size = len(train_full_dataset) - train_size
 
-#indices = torch.randperm(len(train_full_dataset)).tolist()
-#train_indices = indices[:train_size]
-#val_indices = indices[train_size:]
+indices = torch.randperm(len(train_full_dataset)).tolist()
+train_indices = indices[:train_size]
+val_indices = indices[train_size:]
 
-#train_dataset = Subset(train_full_dataset, train_indices)
-#val_dataset = Subset(val_full_dataset, val_indices)
+train_dataset = Subset(train_full_dataset, train_indices)
+val_dataset = Subset(val_full_dataset, val_indices)
 
 #print("Train sample: ", type(train_dataset[0][0]))
 #print("Val sample: ", type(val_dataset[0][0]))
 
-#print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
+print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
 
-train_loader = DataLoader(train_full_dataset, batch_size = 32, shuffle = True)
-val_loader = DataLoader(val_full_dataset, batch_size = 32, shuffle = False)
+train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True)
+val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
 
 print("Dataloaders created")
 
