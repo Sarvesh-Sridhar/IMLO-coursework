@@ -72,6 +72,7 @@ num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.001)
+lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 30)
 
 #sample_img, sample_label = train_dataset[0]
 #print("Image type: ", type(sample_img))
@@ -144,9 +145,10 @@ def validate(model, loader, loss_fn):
 for epoch in range(30):
     train_loss, train_acc = train_epoch(model, train_loader, loss_fn, optimiser)
     val_loss, val_acc = validate(model, val_loader, loss_fn)
-    
+    lr_scheduler.step()
 
     print(f"Epoch number {epoch + 1}: "
           f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc * 100:.2f}% | "
-          f"Val Loss = {val_loss:.4f} | Val Acc = {val_acc * 100:.2f}%"
+          f"Val Loss = {val_loss:.4f} | Val Acc = {val_acc * 100:.2f}% | "
+          f"LR = {lr_scheduler.get_last_lr()[0]:.6f}"
           )
