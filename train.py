@@ -72,7 +72,7 @@ num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimiser = optim.Adam(model.parameters(), lr = 0.001)
-lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 30)
+lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 45)
 
 #sample_img, sample_label = train_dataset[0]
 #print("Image type: ", type(sample_img))
