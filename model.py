@@ -50,7 +50,7 @@ class CNN(nn.Module):
         self.pool4 = nn.MaxPool2d(2)
         self.resb4 = ResidualBlock(512)
 
-        self.dropout = nn.Dropout(0.05)
+        self.dropout = nn.Dropout(0.25)
         self.gap = nn.AdaptiveAvgPool2d(1)
         self.fc1 = nn.Linear(512, 256)
         self.fc2 = nn.Linear(256, num_classes)
