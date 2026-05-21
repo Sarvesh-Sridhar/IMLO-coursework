@@ -5,6 +5,7 @@ from torchvision import transforms
 from torchvision.datasets import OxfordIIITPet
 from torch.utils.data import DataLoader
 from model import CNN
+import os
 
 #set a fixed seed of 42 to ensure consistent values
 seed = 42
@@ -174,3 +175,5 @@ for epoch in range(30):
 #save the trained model weights for evaluation in test.py
 torch.save(model.state_dict(), "model.pth")
 print("Model saved")
+print(f"Model weights saved to {model.pth}")
+print(f"File exists on disk: {os.path.exists(model.pth)}")
