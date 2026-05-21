@@ -3,10 +3,10 @@ import torch.optim as optim
 from torch import nn
 from torchvision import transforms
 from torchvision.datasets import OxfordIIITPet
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 from model import CNN
 
-#set a fixed random seed of 42 to ensure consistent values
+#set a fixed seed of 42 to ensure consistent values
 seed = 42
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
