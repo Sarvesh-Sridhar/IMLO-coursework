@@ -10,13 +10,14 @@ from model import CNN
 seed = 42
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+torch.backends.cudnn.deterministic = True       #ensures determinisitc CUDA operations
+torch.backends.cudnn.benchmark = False      #disables auto-tuning for consistency
 
+#use GPU if available as an option else CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device in use:", device)
 
-#
+#normalise using ImageNet mean and std
 normalise = transforms.Normalize(
     mean = [0.485, 0.456, 0.406],
     std = [0.229, 0.224, 0.225]
@@ -25,8 +26,8 @@ normalise = transforms.Normalize(
 #training transformation with data augmentation to imporve generalisation
 train_transform = transforms.Compose([
     transforms.RandomResizedCrop(224, scale = (0.8, 1.0)),      #random crop and resize
-    transforms.RandomHorizontalFlip(),                          #random horizontal flip
-    transforms.ColorJitter(                                     
+    transforms.RandomHorizontalFlip(),      #random horizontal flip
+    transforms.ColorJitter(     #random colour variation                         
         brightness = 0.1,
         contrast = 0.1,
         saturation = 0.1,
@@ -35,14 +36,18 @@ train_transform = transforms.Compose([
     normalise,      #normalises the pixel values
 ])
 
+"""
+=== REMOVED FOR FINAL RUN ===
+
 #validation transformation with no augmentation
 val_transform = transforms.Compose([
     transforms.Resize((224, 224)),      #resize to fixed size
     transforms.ToTensor(),              
     normalise,
 ])
+"""
 
-#load the trainval split 2 times, once for training and once for validation
+#load the entire trainval split 
 train_full_dataset = OxfordIIITPet(
     root = "data",
     split = "trainval",
@@ -50,6 +55,9 @@ train_full_dataset = OxfordIIITPet(
     transform = train_transform,
     download = True
 )
+
+"""
+=== REMOVED FOR FINAL RUN ===
 
 val_full_dataset = OxfordIIITPet(
     root = "data",
@@ -71,16 +79,23 @@ val_indices = indices[train_size:]
 #create subsets using the split indices
 train_dataset = Subset(train_full_dataset, train_indices)
 val_dataset = Subset(val_full_dataset, val_indices)
+"""
 
-print(f"Train size: {len(train_dataset)} | Val size: {len(val_dataset)}")
+print(f"Train size: {len(train_full_dataset)}")
 
 #create dataloaders, train_loader shuffled for randomness
-train_loader = DataLoader(train_dataset, batch_size = 32, shuffle = True)
+train_loader = DataLoader(train_full_dataset, batch_size = 32, shuffle = True)
+
+
+"""
+=== REMOVED FOR FINAL RUN ===
+
 val_loader = DataLoader(val_dataset, batch_size = 32, shuffle = False)
+"""
 
 print("Dataloaders created")
 
-#initialises model, loss function, optimiser and LR scheduler
+#initialise model, loss function, optimiser and LR scheduler
 num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss(label_smoothing = 0.1)        #crossentropyloss with label smoothing to help reduce overconfidence
@@ -88,10 +103,10 @@ optimiser = optim.Adam(model.parameters(), lr = 0.0005)     #adam optimiser with
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 45)        #cosine annealing smoothly decays LR and T_max = 45 to decay LR slowly
 
 """
-trains the model for one epoch and returns average loss and accuracy
+Trains the model for one epoch and returns average loss and accuracy
 """
 def train_epoch(model, loader, loss_fn, optimiser):
-    model.train()
+    model.train()       #set model to training mode
     total_loss = 0
     correct = 0
     total = 0
@@ -104,7 +119,7 @@ def train_epoch(model, loader, loss_fn, optimiser):
         outputs = model(images)     #forward pass
         loss = loss_fn(outputs, labels)     #find loss
         loss.backward()         #backpropagation
-        optimiser.step()        #update the weights
+        optimiser.step()        #update weights
 
         total_loss = total_loss + loss.item()
 
@@ -118,10 +133,11 @@ def train_epoch(model, loader, loss_fn, optimiser):
 
     return avg_loss, train_acc
 
+"""
+=== REMOVED FOR FINAL RUN ===
+
 def validate(model, loader, loss_fn):
-    """
-    Evaluate the model on the validation set and return average loss and accuracy
-    """
+    
     model.eval()        #set model to evaluation mode
     total_loss = 0
     correct = 0
@@ -143,16 +159,15 @@ def validate(model, loader, loss_fn):
     val_acc = correct / total
     
     return avg_loss, val_acc
+"""
 
 #training loop running for 30 epochs
 for epoch in range(30):
     train_loss, train_acc = train_epoch(model, train_loader, loss_fn, optimiser)
-    val_loss, val_acc = validate(model, val_loader, loss_fn)
     lr_scheduler.step()     #update LR after each epoch
 
     print(f"Epoch number {epoch + 1}: "
           f"Train Loss = {train_loss:.4f} | Train Acc = {train_acc * 100:.2f}% | "
-          f"Val Loss = {val_loss:.4f} | Val Acc = {val_acc * 100:.2f}% | "
           f"LR = {lr_scheduler.get_last_lr()[0]:.6f}"
           )
 
