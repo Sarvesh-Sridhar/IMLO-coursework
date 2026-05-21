@@ -5,12 +5,6 @@ from torchvision.datasets import OxfordIIITPet
 from torch.utils.data import DataLoader
 from model import CNN
 
-seed = 42
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device in use:", device)
 
@@ -50,4 +44,5 @@ with torch.no_grad():
         total = total + labels.size(0)
 
 test_acc = correct / total
-print
+
+print(f"Test Accuracy: {test_acc * 100:.2f}%")
