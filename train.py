@@ -21,13 +21,13 @@ normalise = transforms.Normalize(
 )
 
 train_transform = transforms.Compose([
-    transforms.RandomResizedCrop(224, scale = (0.7, 1.0)),
+    transforms.RandomResizedCrop(224, scale = (0.8, 1.0)),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(15),
+    #transforms.RandomRotation(15),
     transforms.ColorJitter(
-        brightness = 0.2,
-        contrast = 0.2,
-        saturation = 0.2,
+        brightness = 0.1,
+        contrast = 0.1,
+        saturation = 0.1,
     ),
     transforms.ToTensor(),
     normalise,
@@ -78,7 +78,7 @@ print("Dataloaders created")
 num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
 loss_fn = nn.CrossEntropyLoss(label_smoothing = 0.1)
-optimiser = optim.Adam(model.parameters(), lr = 0.0005)
+optimiser = optim.Adam(model.parameters(), lr = 0.001)
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 45)
 
 #sample_img, sample_label = train_dataset[0]
