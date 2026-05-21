@@ -175,5 +175,3 @@ for epoch in range(30):
 #save the trained model weights for evaluation in test.py
 torch.save(model.state_dict(), "model.pth")
 print("Model saved")
-print(f"Model weights saved to {model.pth}")
-print(f"File exists on disk: {os.path.exists(model.pth)}")
