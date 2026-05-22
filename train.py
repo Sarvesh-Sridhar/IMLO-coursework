@@ -99,6 +99,10 @@ print("Dataloaders created")
 #initialise model, loss function, optimiser and LR scheduler
 num_classes = len(train_full_dataset.classes)
 model = CNN(num_classes = num_classes).to(device)
+
+total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print(f"Total number of weights and biases: {total_params}\n")
+
 loss_fn = nn.CrossEntropyLoss(label_smoothing = 0.1)        #crossentropyloss with label smoothing to help reduce overconfidence
 optimiser = optim.Adam(model.parameters(), lr = 0.0005)     #adam optimiser with low LR
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max = 45)        #cosine annealing smoothly decays LR and T_max = 45 to decay LR slowly
